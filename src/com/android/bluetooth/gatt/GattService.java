@@ -1906,6 +1906,16 @@ public class GattService extends ProfileService {
                     + ", originalAddress=" + originalAddress);
         }
 
+        String identityAddress = mAdapterService.getIdentityAddress(address);
+        if (!address.equals(identityAddress)) {
+            if (VDBG) {
+                Log.d(TAG, "found identityAddress of " + address + ", replace originalAddress as "
+                        + identityAddress);
+            }
+            originalAddress = identityAddress;
+        }
+
+
         byte[] legacyAdvData = Arrays.copyOfRange(advData, 0, 62);
 
         for (ScanClient client : mScanManager.getRegularScanQueue()) {
@@ -1991,12 +2001,6 @@ public class GattService extends ProfileService {
                 continue;
             }
 
-            if (matchResult.getMatchOrigin() == MatchOrigin.ORIGINAL_ADDRESS) {
-                result = new ScanResult(getAnonymousDevice(originalAddress), eventType, primaryPhy,
-                        secondaryPhy, advertisingSid, txPower, rssi, periodicAdvInt, scanRecord,
-                            SystemClock.elapsedRealtimeNanos());
-
-            }
 
             if ((settings.getCallbackType() & ScanSettings.CALLBACK_TYPE_ALL_MATCHES) == 0) {
                 continue;
