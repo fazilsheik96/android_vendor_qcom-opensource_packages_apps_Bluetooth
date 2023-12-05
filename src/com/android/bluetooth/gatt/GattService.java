@@ -318,10 +318,11 @@ public class GattService extends ProfileService {
         int rssi;
         int periodicAdvInt;
         byte[] advData;
+        String originalAddress;
 
         public AdvertisingReport(int eventType, int addressType, String address, int primaryPhy,
             int secondaryPhy, int advertisingSid, int txPower, int rssi, int periodicAdvInt,
-            byte[] advData) {
+            byte[] advData, String originalAddress) {
             this.eventType = eventType;
             this.addressType = addressType;
             this.address = address;
@@ -332,6 +333,7 @@ public class GattService extends ProfileService {
             this.rssi = rssi;
             this.periodicAdvInt = periodicAdvInt;
             this.advData = advData;
+            this.originalAddress = originalAddress;
         }
     };
 
@@ -1863,11 +1865,11 @@ public class GattService extends ProfileService {
 
     void HandleScanResult(int eventType, int addressType, String address, int primaryPhy,
             int secondaryPhy, int advertisingSid, int txPower, int rssi, int periodicAdvInt,
-            byte[] advData) {
+            byte[] advData, String originalAddress) {
         // When in testing mode, ignore all real-world events
         if (isTestModeEnabled()) return;
         onScanResultInternal(eventType, addressType, address, primaryPhy, secondaryPhy,
-                advertisingSid, txPower, rssi, periodicAdvInt, advData);
+                advertisingSid, txPower, rssi, periodicAdvInt, advData, originalAddress);
     }
 
     void onScanResultInternal(int eventType, int addressType, String address, int primaryPhy,
@@ -2010,7 +2012,8 @@ public class GattService extends ProfileService {
                                      advReport.address, advReport.primaryPhy,
                                      advReport.secondaryPhy, advReport.advertisingSid,
                                      advReport.txPower, advReport.rssi,
-                                     advReport.periodicAdvInt, advReport.advData);
+                                     advReport.periodicAdvInt, advReport.advData,
+                                     advReport.originalAddress);
                 }
             }
         }
@@ -2038,7 +2041,7 @@ public class GattService extends ProfileService {
 
         AdvertisingReport advReport = new AdvertisingReport(eventType, addressType, address,
                            primaryPhy, secondaryPhy, advertisingSid, txPower, rssi,
-                           periodicAdvInt, advData);
+                           periodicAdvInt, advData, originalAddress);
         Message message = new Message();
         message.what = ScanResultHandler.MSG_BLE_ADVERTISING_REPORT;
         message.obj = advReport;
