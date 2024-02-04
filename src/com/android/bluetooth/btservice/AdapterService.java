@@ -6998,9 +6998,14 @@ public class AdapterService extends Service {
             if (DBG) Log.d(TAG, "getIdentityAddress null retruning " + address);
             return address;
         }
-        if (DBG) Log.d(TAG, "getIdentityAddress " + address + " - "
-                + identityDevice.getAddress());
-        return identityDevice.getAddress();
+        String maddress = identityDevice.getAddress();
+        if (Utils.isValidBtAddress(maddress)) {
+            if (DBG) Log.d(TAG, "getIdentityAddress " + address + " - "
+                + maddress);
+            return maddress;
+        }
+
+        return address;
     }
 
     public boolean isAdvAudioDevice(BluetoothDevice device) {

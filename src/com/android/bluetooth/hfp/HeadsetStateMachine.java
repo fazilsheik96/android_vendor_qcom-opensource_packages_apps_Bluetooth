@@ -383,9 +383,19 @@ public class HeadsetStateMachine extends StateMachine {
             mAudioOn.broadcastConnectionState(mDevice, BluetoothProfile.STATE_CONNECTED,
                                 BluetoothProfile.STATE_DISCONNECTED);
         }
+        if (getCurrentHeadsetStateMachineState() == mAudioDisconnecting) {
+            mAudioDisconnecting.broadcastAudioState(mDevice, BluetoothHeadset.STATE_AUDIO_CONNECTING,
+                    BluetoothHeadset.STATE_AUDIO_DISCONNECTED);
+            mAudioDisconnecting.broadcastConnectionState(mDevice, BluetoothProfile.STATE_CONNECTED,
+                    BluetoothProfile.STATE_DISCONNECTED);
+        }
         if(getCurrentHeadsetStateMachineState() == mConnected){
             mConnected.broadcastConnectionState(mDevice, BluetoothProfile.STATE_CONNECTED,
                                      BluetoothProfile.STATE_DISCONNECTED);
+        }
+        if (getCurrentHeadsetStateMachineState() == mDisconnecting) {
+            mDisconnecting.broadcastConnectionState(mDevice, BluetoothProfile.STATE_DISCONNECTING,
+                    BluetoothProfile.STATE_DISCONNECTED);
         }
         if(getCurrentHeadsetStateMachineState() == mConnecting){
             mConnecting.broadcastConnectionState(mDevice, BluetoothProfile.STATE_CONNECTING,
