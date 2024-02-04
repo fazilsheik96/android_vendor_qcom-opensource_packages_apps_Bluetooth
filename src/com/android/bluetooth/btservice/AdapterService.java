@@ -4839,7 +4839,7 @@ public class AdapterService extends Service {
 
         if (setA2dp && mA2dpService != null) {
             if(isQtiLeAudioEnabled || isAospLeaEnabled) {
-                activeDeviceManager.setActiveDevice(device,
+                activeDeviceManager.setActiveDeviceBlocking(device,
                         ApmConstIntf.AudioFeatures.MEDIA_AUDIO, true);
             } else {
                 Log.i(TAG, "setActiveDevice: Setting active A2dp device " + device);

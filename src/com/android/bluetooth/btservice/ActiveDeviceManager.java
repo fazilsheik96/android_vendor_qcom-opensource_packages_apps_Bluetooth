@@ -253,18 +253,8 @@ public class ActiveDeviceManager {
                              "handleMessage(MESSAGE_LE_AUDIO_ACTION_CONNECTION_STATE_CHANGED):"
                              + " device " + device + " connected");
                         }
-                        if (mLeAudioActiveDevice != null) {
-                            LeAudioService leAudioService = mFactory.getLeAudioService();
-                            int groupId = leAudioService.getGroupId(mLeAudioActiveDevice);
-                            if (leAudioService.getGroupId(device) == groupId) {
-                                Log.d(TAG, "Lead device is already active");
-                            } else {
-                                setLeAudioActiveDevice(device);
-                                break;
-                            }
-                        } else {
-                            setLeAudioActiveDevice(device);
-                        }
+
+                        setLeAudioActiveDevice(device);
                         break;
                     }
 
@@ -278,7 +268,6 @@ public class ActiveDeviceManager {
                         int mMediaProfile =
                             getCurrentActiveProfile(ApmConstIntf.AudioFeatures.MEDIA_AUDIO);
                         if (mMediaProfile == ApmConstIntf.AudioProfiles.A2DP) {
-                            mLeAudioActiveDevice = null;
                            if (DBG) {
                               Log.d(TAG, "cuurent active profile is A2DP"
                               + "Not setting active device null for LEAUDIO");
@@ -300,8 +289,7 @@ public class ActiveDeviceManager {
                                 List<BluetoothDevice> leAudioConnectedDevice =
                                         leAudioService.getConnectedDevices();
                                 for (BluetoothDevice peerDevice : leAudioConnectedDevice) {
-                                    if (!Objects.equals(peerDevice, device) &&
-                                        leAudioService.getGroupId(peerDevice) == groupId) {
+                                    if (leAudioService.getGroupId(peerDevice) == groupId) {
                                         peerLeAudioDevice = peerDevice;
                                         break;
                                     }
@@ -342,11 +330,9 @@ public class ActiveDeviceManager {
                                     Log.w(TAG, "Set leAudio active device to null");
                                     setLeAudioActiveDevice(null);
                                 } else if(isMediaActive || isBroadcastActive) {
-                                    mLeAudioActiveDevice = null;
                                     activeDeviceManager.setActiveDevice(null,
                                                            ApmConstIntf.AudioFeatures.MEDIA_AUDIO);
                                 } else if(isCallActive) {
-                                    mLeAudioActiveDevice = null;
                                     activeDeviceManager.setActiveDevice(null,
                                                            ApmConstIntf.AudioFeatures.CALL_AUDIO);
                                 }
@@ -1009,7 +995,7 @@ public class ActiveDeviceManager {
         if (leAudioService == null) {
             return false;
         }
-        if (!leAudioService.setActiveDeviceBlocking(device)) {
+        if (!leAudioService.setActiveDevice(device)) {
             return false;
         }
         mLeAudioActiveDevice = device;
