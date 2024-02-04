@@ -4839,7 +4839,7 @@ public class AdapterService extends Service {
 
         if (setA2dp && mA2dpService != null) {
             if(isQtiLeAudioEnabled || isAospLeaEnabled) {
-                activeDeviceManager.setActiveDeviceBlocking(device,
+                activeDeviceManager.setActiveDevice(device,
                         ApmConstIntf.AudioFeatures.MEDIA_AUDIO, true);
             } else {
                 Log.i(TAG, "setActiveDevice: Setting active A2dp device " + device);
@@ -6997,9 +6997,14 @@ public class AdapterService extends Service {
             if (DBG) Log.d(TAG, "getIdentityAddress null retruning " + address);
             return address;
         }
-        if (DBG) Log.d(TAG, "getIdentityAddress " + address + " - "
-                + identityDevice.getAddress());
-        return identityDevice.getAddress();
+        String maddress = identityDevice.getAddress();
+        if (Utils.isValidBtAddress(maddress)) {
+            if (DBG) Log.d(TAG, "getIdentityAddress " + address + " - "
+                + maddress);
+            return maddress;
+        }
+
+        return address;
     }
 
     public boolean isAdvAudioDevice(BluetoothDevice device) {
