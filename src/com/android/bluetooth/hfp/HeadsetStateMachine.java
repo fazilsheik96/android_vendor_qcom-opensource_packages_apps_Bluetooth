@@ -2624,6 +2624,13 @@ public class HeadsetStateMachine extends StateMachine {
     private void processIntentA2dpPlayStateChanged(int a2dpState) {
         Log.d(TAG, "Enter processIntentA2dpPlayStateChanged(): a2dp state "+
                   a2dpState);
+
+        int cura2dpstate = mHeadsetService.getHfpA2DPSyncInterface().isA2dpPlaying();
+            if (cura2dpstate == HeadsetA2dpSync.A2DP_PLAYING) {
+            Log.d(TAG, "a2dp is PALYING, ignore this A2DP_STATE_CHANGED event");
+            return;
+        }
+
         if (mHeadsetService.isVRStarted()) {
             Log.d(TAG, "VR is in started state");
             if (mDevice.equals(mHeadsetService.getActiveDevice())) {
